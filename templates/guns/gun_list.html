@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Guns</h1>
+<ul>
+    {% for gun in guns %}
+    <li>
+        <a href="{% url 'gun_detail' gun.slug %}">{{ gun.name }}</a> ({{ gun.game }})
+    </li>
+    {% empty %}
+    <li>No guns yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

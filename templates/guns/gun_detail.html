@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ gun.name }}</h1>
+<p>Game: {{ gun.game }}</p>
+<p>Real-life counterpart: {{ gun.real_life_name }}</p>
+<p>{{ gun.description }}</p>
+
+<hr>
+<h2>Reviews</h2>
+<ul>
+    {% for review in reviews %}
+    <li>
+        <strong>{{ review.name|default:"Anonymous" }}</strong>:
+        {{ review.text }} — Rating: {{ review.rating }}
+    </li>
+    {% empty %}
+    <li>No reviews yet.</li>
+    {% endfor %}
+</ul>
+
+<h3>Add a review</h3>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}
