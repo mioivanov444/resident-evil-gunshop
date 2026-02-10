@@ -1,28 +1,63 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>{{ gun.name }}</h1>
-<p>Game: {{ gun.game }}</p>
-<p>Real-life counterpart: {{ gun.real_life_name }}</p>
-<p>{{ gun.description }}</p>
+
+<section>
+    <h1>{{ gun.name }}</h1>
+    <p><strong>Game:</strong> {{ gun.game }}</p>
+    <p><strong>Real-life counterpart:</strong> {{ gun.real_life_name }}</p>
+
+    <p><strong>Average Rating:</strong> {{ average_rating|floatformat:1 }} / 5</p>
+    <p>
+        {% for i in "12345" %}
+            {% if forloop.counter <= average_rating_int %}
+                <span style="color: gold; font-size: 1.2em;">★</span>
+            {% else %}
+                <span style="color: gold; font-size: 1.2em;">☆</span>
+            {% endif %}
+        {% endfor %}
+    </p>
+</section>
+
+<section>
+    <h2>Description</h2>
+    <p>{{ gun.description }}</p>
+</section>
 
 <hr>
-<h2>Reviews</h2>
-<ul>
-    {% for review in reviews %}
-    <li>
-        <strong>{{ review.name|default:"Anonymous" }}</strong>:
-        {{ review.text }} — Rating: {{ review.rating }}
-    </li>
-    {% empty %}
-    <li>No reviews yet.</li>
-    {% endfor %}
-</ul>
 
-<h3>Add a review</h3>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Submit</button>
-</form>
+<section>
+    <h2>Reviews</h2>
+
+    {% if reviews %}
+        {% for review in reviews %}
+            <article style="padding: 0.5em; margin-bottom: 0.5em; border: 1px solid #ddd; border-radius: 5px;">
+                <p>
+                    <strong>{{ review.name|default:"Anonymous" }}</strong>
+                    — Rating:
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= review.rating %}
+                            <span style="color: gold;">★</span>
+                        {% else %}
+                            <span style="color: gold;">☆</span>
+                        {% endif %}
+                    {% endfor %}
+                </p>
+                <p>{{ review.text }}</p>
+            </article>
+        {% endfor %}
+    {% else %}
+        <p>No reviews yet.</p>
+    {% endif %}
+</section>
+
+<section>
+    <h2>Add a review</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit review</button>
+    </form>
+</section>
+
 {% endblock %}
