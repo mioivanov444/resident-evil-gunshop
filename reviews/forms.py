@@ -13,3 +13,12 @@ class ReviewForm(forms.ModelForm):
         help_texts = {
             'rating': 'Enter a number from 1 to 5',
         }
+        widgets = {
+            'text': forms.Textarea(attrs={'rows': 3, 'cols': 40}),
+        }
+
+    def clean_rating(self):
+        rating = self.cleaned_data.get('rating')
+        if rating < 1 or rating > 5:
+            raise forms.ValidationError("Rating must be between 1 and 5.")
+        return rating

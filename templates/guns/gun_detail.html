@@ -2,10 +2,27 @@
 
 {% block content %}
 
+{% if request.user.is_staff %}
+<p>
+    <a href="{% url 'gun_update' gun.slug %}">Edit Gun</a> |
+    <a href="{% url 'gun_delete' gun.slug %}">Delete Gun</a>
+</p>
+{% endif %}
+
 <section>
     <h1>{{ gun.name }}</h1>
     <p><strong>Game:</strong> {{ gun.game }}</p>
     <p><strong>Real-life counterpart:</strong> {{ gun.real_life_name }}</p>
+    {% if gun.categories.exists %}
+    <p><strong>Categories:</strong>
+    {% for category in gun.categories.all %}
+        <a href="{% url 'category_detail' category.slug %}"
+           style="background-color:#eee; padding:2px 6px; border-radius:4px; margin-right:4px; text-decoration:none;">
+            {{ category.name }}
+        </a>
+    {% endfor %}
+    </p>
+    {% endif %}
 
     <p><strong>Average Rating:</strong> {{ average_rating|floatformat:1 }} / 5</p>
     <p>
@@ -44,6 +61,13 @@
                     {% endfor %}
                 </p>
                 <p>{{ review.text }}</p>
+
+                {% if request.user.is_staff %}
+                    <p>
+                        <a href="{% url 'review_update' review.pk %}">Edit</a> |
+                        <a href="{% url 'review_delete' review.pk %}">Delete</a>
+                    </p>
+                {% endif %}
             </article>
         {% endfor %}
     {% else %}

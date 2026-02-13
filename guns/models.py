@@ -1,13 +1,12 @@
 from django.db import models
 from django.utils.text import slugify
 
-class Gun(models.Model):
-    name = models.CharField(max_length=100)
-    game = models.CharField(max_length=100)
-    real_life_name = models.CharField(max_length=100)
-    description = models.TextField()
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(unique=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Categories"
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -17,4 +16,24 @@ class Gun(models.Model):
     def __str__(self):
         return self.name
 
+class Gun(models.Model):
+    name = models.CharField(max_length=100)
+    game = models.CharField(max_length=100)
+    real_life_name = models.CharField(max_length=100)
+    description = models.TextField()
+    slug = models.SlugField(unique=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    categories = models.ManyToManyField(
+        Category,
+        related_name='guns',
+        blank=True,
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
 

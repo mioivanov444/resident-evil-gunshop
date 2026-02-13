@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<p>
+    <a href="{% url 'gun_list' %}">All Guns</a> &raquo; {{ category.name }}
+</p>
+
+<h1>{{ category.name }}</h1>
+<p>Guns in this category:</p>
+
+<ul>
+    {% for gun in guns %}
+    <li>
+        <a href="{% url 'gun_detail' gun.slug %}">{{ gun.name }}</a> ({{ gun.game }})
+    </li>
+    {% empty %}
+    <li>No guns in this category yet.</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'gun_list' %}">Back to all guns</a>
+{% endblock %}

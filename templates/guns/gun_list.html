@@ -2,13 +2,33 @@
 
 {% block content %}
 <h1>Guns</h1>
+<p>
+    <a href="{% url 'gun_create' %}" style="padding:6px 12px; background-color:#007bff; color:white; border-radius:4px; text-decoration:none;">
+        Add New Gun
+    </a>
+</p>
 <ul>
     {% for gun in guns %}
     <li>
         <a href="{% url 'gun_detail' gun.slug %}">{{ gun.name }}</a> ({{ gun.game }})
+
+        {% if gun.categories.exists %}
+            <p>
+                <strong>Categories:</strong>
+                {% for category in gun.categories.all %}
+                    <a href="{% url 'category_detail' category.slug %}"
+                       style="background-color:#eee; padding:2px 6px; border-radius:4px; margin-right:4px; text-decoration:none;">
+                        {{ category.name }}
+                    </a>
+                {% endfor %}
+            </p>
+        {% endif %}
+
     </li>
     {% empty %}
     <li>No guns yet.</li>
     {% endfor %}
 </ul>
 {% endblock %}
+
+

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Confirm Delete Review</h1>
+<p>Are you sure you want to delete <strong>{{ review.name|default:'Anonymous' }}</strong>'s review?</p>
+<p>"{{ review.text }}"</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" style="background-color:red; color:white; padding:6px 12px;">Yes, Delete</button>
+    <a href="{% url 'gun_detail' gun.slug %}" style="padding:6px 12px;">Cancel</a>
+</form>
+{% endblock %}

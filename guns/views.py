@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Gun
+from .models import Gun, Category
 from reviews.models import Review
 from reviews.forms import ReviewForm
 from django.db.models import Avg
 import math
+from .forms import GunForm
+from django.contrib.admin.views.decorators import staff_member_required
 
 def gun_list(request):
     guns = Gun.objects.all()
@@ -37,3 +39,45 @@ def gun_detail(request, slug):
         'average_rating_int': average_rating_int,
     }
     return render(request, 'guns/gun_detail.html', context)
+
+
+
+def category_detail(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    guns = category.guns.all()
+    return render(request, 'guns/category_detail.html', {
+        'category': category,
+        'guns': guns
+    })
+
+@staff_member_required
+def gun_create(request):
+    if request.method == 'POST':
+        form = GunForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('gun_list')
+    else:
+        form = GunForm()
+    return render(request, 'guns/gun_form.html', {'form': form, 'title': 'Add New Gun'})
+
+
+@staff_member_required
+def gun_update(request, slug):
+    gun = get_object_or_404(Gun, slug=slug)
+    if request.method == 'POST':
+        form = GunForm(request.POST, instance=gun)
+        if form.is_valid():
+            form.save()
+            return redirect('gun_detail', slug=gun.slug)
+    else:
+        form = GunForm(instance=gun)
+    return render(request, 'guns/gun_form.html', {'form': form, 'title': f'Edit {gun.name}'})
+
+@staff_member_required
+def gun_delete(request, slug):
+    gun = get_object_or_404(Gun, slug=slug)
+    if request.method == 'POST':
+        gun.delete()
+        return redirect('gun_list')
+    return render(request, 'guns/gun_confirm_delete.html', {'gun': gun})
