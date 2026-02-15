@@ -34,6 +34,9 @@ class Gun(models.Model):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
         return self.name
 
