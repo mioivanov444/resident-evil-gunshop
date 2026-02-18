@@ -23,6 +23,7 @@ class Gun(models.Model):
     description = models.TextField()
     slug = models.SlugField(unique=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='guns/', blank=True, null=True)
     categories = models.ManyToManyField(
         Category,
         related_name='guns',

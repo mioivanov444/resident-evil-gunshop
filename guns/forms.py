@@ -5,7 +5,7 @@ class GunForm(forms.ModelForm):
     class Meta:
         model = Gun
 
-        fields = ['name', 'game', 'real_life_name', 'description', 'categories']
+        fields = ['name', 'game', 'real_life_name', 'description', 'image', 'categories']
 
         widgets = {
             'name': forms.TextInput(attrs={

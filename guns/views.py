@@ -6,10 +6,21 @@ from django.db.models import Avg
 import math
 from .forms import GunForm
 from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models import Q
 
 def gun_list(request):
+    query = request.GET.get('q')
     guns = Gun.objects.all()
-    return render(request, 'guns/gun_list.html', {'guns': guns})
+    if query:
+        guns = guns.filter(
+            Q(name__icontains=query) |
+            Q(game__icontains=query)
+        )
+
+    return render(request, 'guns/gun_list.html', {
+        'guns': guns,
+        'query': query
+    })
 
 def gun_detail(request, slug):
     gun = get_object_or_404(Gun, slug=slug)
@@ -40,6 +51,12 @@ def gun_detail(request, slug):
     }
     return render(request, 'guns/gun_detail.html', context)
 
+def category_list(request):
+    categories = Category.objects.all()
+    return render(request, 'guns/category_list.html', {
+        'categories': categories
+    })
+
 
 
 def category_detail(request, slug):
@@ -53,7 +70,7 @@ def category_detail(request, slug):
 @staff_member_required
 def gun_create(request):
     if request.method == 'POST':
-        form = GunForm(request.POST)
+        form = GunForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('gun_list')
@@ -66,14 +83,13 @@ def gun_create(request):
 def gun_update(request, slug):
     gun = get_object_or_404(Gun, slug=slug)
     if request.method == 'POST':
-        form = GunForm(request.POST, instance=gun)
+        form = GunForm(request.POST, request.FILES, instance=gun)
         if form.is_valid():
             form.save()
             return redirect('gun_detail', slug=gun.slug)
     else:
         form = GunForm(instance=gun)
     return render(request, 'guns/gun_form.html', {'form': form, 'title': f'Edit {gun.name}'})
-
 @staff_member_required
 def gun_delete(request, slug):
     gun = get_object_or_404(Gun, slug=slug)

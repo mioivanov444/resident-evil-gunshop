@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Resident Evil Gunshop</h1>
-<p>A repository of Resident Evil weapons and their real-life counterparts!</p>
+<div class="text-center py-5">
+    <h1 class="display-4 fw-bold">Resident Evil Gunshop</h1>
+    <p class="lead mt-3">
+        Explore firearms featured in the Resident Evil series
+        and discover their real-world counterparts.
+    </p>
+
+    <a href="{% url 'gun_list' %}" class="btn btn-primary btn-lg mt-3">
+        Browse Guns
+    </a>
+</div>
+
 {% endblock %}

@@ -1,87 +1,109 @@
 {% extends 'base.html' %}
-
 {% block content %}
 
-{% if request.user.is_staff %}
-<p>
-    <a href="{% url 'gun_update' gun.slug %}">Edit Gun</a> |
-    <a href="{% url 'gun_delete' gun.slug %}">Delete Gun</a>
-</p>
-{% endif %}
+<div class="row mb-4">
 
-<section>
-    <h1>{{ gun.name }}</h1>
-    <p><strong>Game:</strong> {{ gun.game }}</p>
-    <p><strong>Real-life counterpart:</strong> {{ gun.real_life_name }}</p>
-    {% if gun.categories.exists %}
-    <p><strong>Categories:</strong>
-    {% for category in gun.categories.all %}
-        <a href="{% url 'category_detail' category.slug %}"
-           style="background-color:#eee; padding:2px 6px; border-radius:4px; margin-right:4px; text-decoration:none;">
-            {{ category.name }}
-        </a>
-    {% endfor %}
-    </p>
-    {% endif %}
+    <!-- Image Column -->
+    <div class="col-md-5">
+        {% if gun.image %}
+            <img src="{{ gun.image.url }}" class="img-fluid rounded shadow-sm mb-3" alt="{{ gun.name }}">
+        {% else %}
+            <div class="bg-secondary text-center p-5 rounded">
+                <p class="mb-0">No image available</p>
+            </div>
+        {% endif %}
+    </div>
 
-    <p><strong>Average Rating:</strong> {{ average_rating|floatformat:1 }} / 5</p>
-    <p>
-        {% for i in "12345" %}
-            {% if forloop.counter <= average_rating_int %}
-                <span style="color: gold; font-size: 1.2em;">★</span>
-            {% else %}
-                <span style="color: gold; font-size: 1.2em;">☆</span>
-            {% endif %}
-        {% endfor %}
-    </p>
-</section>
+    <!-- Info Column -->
+    <div class="col-md-7">
+        <h1 class="mb-3">{{ gun.name }}</h1>
 
-<section>
-    <h2>Description</h2>
-    <p>{{ gun.description }}</p>
-</section>
+        <p><strong>Game:</strong> {{ gun.game }}</p>
+        <p><strong>Real-life counterpart:</strong> {{ gun.real_life_name }}</p>
+
+        {% if gun.categories.exists %}
+        <p>
+            <strong>Categories:</strong><br>
+            {% for category in gun.categories.all %}
+                <a href="{% url 'category_detail' category.slug %}"
+                   class="badge bg-danger text-decoration-none me-1">
+                    {{ category.name }}
+                </a>
+            {% endfor %}
+        </p>
+        {% endif %}
+
+        <p>
+            <strong>Average Rating:</strong>
+            <span class="badge bg-warning text-dark">
+                {{ average_rating|floatformat:1 }} / 5
+            </span>
+        </p>
+
+        {% if request.user.is_staff %}
+        <div class="mt-3">
+            <a href="{% url 'gun_update' gun.slug %}" class="btn btn-warning btn-sm me-2">Edit</a>
+            <a href="{% url 'gun_delete' gun.slug %}" class="btn btn-danger btn-sm">Delete</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
 
 <hr>
 
-<section>
-    <h2>Reviews</h2>
+<!-- Description -->
+<div class="mb-4">
+    <h3>Description</h3>
+    <p>{{ gun.description }}</p>
+</div>
 
-    {% if reviews %}
-        {% for review in reviews %}
-            <article style="padding: 0.5em; margin-bottom: 0.5em; border: 1px solid #ddd; border-radius: 5px;">
-                <p>
+<hr>
+
+<!-- Reviews -->
+<h3 class="mb-3">Reviews</h3>
+
+{% if reviews %}
+    {% for review in reviews %}
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2">
                     <strong>{{ review.name|default:"Anonymous" }}</strong>
-                    — Rating:
+                </h6>
+
+                <p>
                     {% for i in "12345" %}
                         {% if forloop.counter <= review.rating %}
-                            <span style="color: gold;">★</span>
+                            <span class="text-warning">★</span>
                         {% else %}
-                            <span style="color: gold;">☆</span>
+                            <span class="text-secondary">☆</span>
                         {% endif %}
                     {% endfor %}
                 </p>
-                <p>{{ review.text }}</p>
+
+                <p class="card-text">{{ review.text }}</p>
 
                 {% if request.user.is_staff %}
-                    <p>
-                        <a href="{% url 'review_update' review.pk %}">Edit</a> |
-                        <a href="{% url 'review_delete' review.pk %}">Delete</a>
-                    </p>
+                    <a href="{% url 'review_update' review.pk %}" class="btn btn-sm btn-warning me-2">Edit</a>
+                    <a href="{% url 'review_delete' review.pk %}" class="btn btn-sm btn-danger">Delete</a>
                 {% endif %}
-            </article>
-        {% endfor %}
-    {% else %}
-        <p>No reviews yet.</p>
-    {% endif %}
-</section>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No reviews yet.</p>
+{% endif %}
 
-<section>
-    <h2>Add a review</h2>
+<hr>
+
+<!-- Add Review Form -->
+<h4 class="mb-3">Add a Review</h4>
+
+<div class="card p-4 shadow-sm">
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Submit review</button>
+        <button type="submit" class="btn btn-danger">Submit Review</button>
     </form>
-</section>
+</div>
 
 {% endblock %}

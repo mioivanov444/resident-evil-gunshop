@@ -1,23 +1,33 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="mb-3">
+    <a href="{% url 'gun_list' %}" class="text-decoration-none">
+        ← Back to All Guns
+    </a>
+</div>
 
-<p>
-    <a href="{% url 'gun_list' %}">All Guns</a> &raquo; {{ category.name }}
-</p>
+<h1 class="mb-4">{{ category.name }}</h1>
 
-<h1>{{ category.name }}</h1>
-<p>Guns in this category:</p>
-
-<ul>
+<div class="row">
     {% for gun in guns %}
-    <li>
-        <a href="{% url 'gun_detail' gun.slug %}">{{ gun.name }}</a> ({{ gun.game }})
-    </li>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            {% if gun.image %}
+                <img src="{{ gun.image.url }}" class="card-img-top" alt="{{ gun.name }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ gun.name }}</h5>
+                <p class="card-text">{{ gun.game }}</p>
+                <a href="{% url 'gun_detail' gun.slug %}" class="btn btn-primary btn-sm">
+                    View Details
+                </a>
+            </div>
+        </div>
+    </div>
     {% empty %}
-    <li>No guns in this category yet.</li>
+        <p>No guns in this category yet.</p>
     {% endfor %}
-</ul>
+</div>
 
-<a href="{% url 'gun_list' %}">Back to all guns</a>
 {% endblock %}

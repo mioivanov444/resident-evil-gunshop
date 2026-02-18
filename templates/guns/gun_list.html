@@ -1,34 +1,65 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<h1>Guns</h1>
-<p>
-    <a href="{% url 'gun_create' %}" style="padding:6px 12px; background-color:#007bff; color:white; border-radius:4px; text-decoration:none;">
-        Add New Gun
-    </a>
-</p>
-<ul>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Guns</h1>
+
+    {% if request.user.is_staff %}
+        <a href="{% url 'gun_create' %}" class="btn btn-danger">
+            Add New Gun
+        </a>
+    {% endif %}
+</div>
+
+<form method="get" class="mb-4">
+    <div class="input-group">
+        <input type="text"
+               name="q"
+               class="form-control"
+               placeholder="Search guns..."
+               value="{{ query|default:'' }}">
+        <button class="btn btn-danger" type="submit">
+            Search
+        </button>
+    </div>
+</form>
+
+<div class="row">
     {% for gun in guns %}
-    <li>
-        <a href="{% url 'gun_detail' gun.slug %}">{{ gun.name }}</a> ({{ gun.game }})
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
 
-        {% if gun.categories.exists %}
-            <p>
-                <strong>Categories:</strong>
-                {% for category in gun.categories.all %}
-                    <a href="{% url 'category_detail' category.slug %}"
-                       style="background-color:#eee; padding:2px 6px; border-radius:4px; margin-right:4px; text-decoration:none;">
-                        {{ category.name }}
+            {% if gun.image %}
+                <img src="{{ gun.image.url }}" class="card-img-top" alt="{{ gun.name }}">
+            {% endif %}
+
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{% url 'gun_detail' gun.slug %}" class="text-decoration-none">
+                        {{ gun.name }}
                     </a>
-                {% endfor %}
-            </p>
-        {% endif %}
+                </h5>
 
-    </li>
+                <p><strong>Game:</strong> {{ gun.game }}</p>
+
+                {% if gun.categories.exists %}
+                    {% for category in gun.categories.all %}
+                        <a href="{% url 'category_detail' category.slug %}"
+                           class="badge bg-secondary text-decoration-none me-1">
+                            {{ category.name }}
+                        </a>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
     {% empty %}
-    <li>No guns yet.</li>
+        <div class="col-12">
+        <div class="alert alert-warning text-center">
+            No guns found matching your search.
+        </div>
+    </div>
     {% endfor %}
-</ul>
+</div>
+
 {% endblock %}
-
-
