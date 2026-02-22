@@ -5,7 +5,7 @@ class GunForm(forms.ModelForm):
     class Meta:
         model = Gun
 
-        fields = ['name', 'game', 'real_life_name', 'description', 'image', 'categories']
+        fields = ['name', 'game', 'real_life_name', 'description', 'image', 'categories', 'slug']
 
         widgets = {
             'name': forms.TextInput(attrs={
@@ -30,6 +30,8 @@ class GunForm(forms.ModelForm):
                 }),
 
             'categories': forms.CheckboxSelectMultiple(),
+
+            'slug': forms.TextInput(attrs={'disabled': 'disabled'}),
         }
 
         labels = {

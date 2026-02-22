@@ -10,16 +10,29 @@ from django.db.models import Q
 
 def gun_list(request):
     query = request.GET.get('q')
+    sort_by = request.GET.get('sort', 'name')
+    order = request.GET.get('order', 'asc')
+
     guns = Gun.objects.all()
+
+    #search filter
     if query:
         guns = guns.filter(
             Q(name__icontains=query) |
             Q(game__icontains=query)
         )
 
+    # sorting
+    if sort_by in ['name', 'game']:
+        if order == 'desc':
+            sort_by = f'-{sort_by}'
+        guns = guns.order_by(sort_by)
+
     return render(request, 'guns/gun_list.html', {
         'guns': guns,
-        'query': query
+        'query': query,
+        'sort_by': sort_by.lstrip('-'),
+        'order': order,
     })
 
 def gun_detail(request, slug):
