@@ -4,7 +4,7 @@ from reviews.models import Review
 from reviews.forms import ReviewForm
 from django.db.models import Avg
 import math
-from .forms import GunForm
+from .forms import GunForm, CategoryForm
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
 
@@ -80,7 +80,7 @@ def category_detail(request, slug):
         'guns': guns
     })
 
-@staff_member_required
+
 def gun_create(request):
     if request.method == 'POST':
         form = GunForm(request.POST, request.FILES)
@@ -92,7 +92,7 @@ def gun_create(request):
     return render(request, 'guns/gun_form.html', {'form': form, 'title': 'Add New Gun'})
 
 
-@staff_member_required
+
 def gun_update(request, slug):
     gun = get_object_or_404(Gun, slug=slug)
     if request.method == 'POST':
@@ -103,10 +103,46 @@ def gun_update(request, slug):
     else:
         form = GunForm(instance=gun)
     return render(request, 'guns/gun_form.html', {'form': form, 'title': f'Edit {gun.name}'})
-@staff_member_required
+
 def gun_delete(request, slug):
     gun = get_object_or_404(Gun, slug=slug)
     if request.method == 'POST':
         gun.delete()
         return redirect('gun_list')
     return render(request, 'guns/gun_confirm_delete.html', {'gun': gun})
+
+def category_create(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            category = form.save()
+            return redirect('category_list')
+    else:
+        form = CategoryForm()
+    return render(request, 'guns/category_form.html', {'form': form, 'title': 'Add Category'})
+
+
+def category_delete(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+
+    if request.method == 'POST':
+        category.delete()
+        return redirect('category_list')
+
+    return render(request, 'guns/category_confirm_delete.html', {'category': category})
+
+
+def category_update(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            return redirect('category_list')
+    else:
+        form = CategoryForm(instance=category)
+
+    return render(request, 'guns/category_form.html', {
+        'form': form,
+        'title': f'Edit Category: {category.name}'
+    })

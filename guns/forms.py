@@ -47,3 +47,16 @@ class GunForm(forms.ModelForm):
         if not name:
             raise forms.ValidationError("Gun must have a name!")
         return name
+
+
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter category name'})
+        }
+        help_texts = {
+            'name': 'Name of the category. (Example: Handgun, Shotgun, Rifle etc.)'
+        }

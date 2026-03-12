@@ -67,7 +67,7 @@ This project uses PostgreSQL as required by the assignment.
 python manage.py migrate
 ```
 
-5. **Create a superuser**
+5. **Create a superuser** (Optional)
 
 ```bash
 python manage.py createsuperuser
@@ -81,23 +81,27 @@ python manage.py runserver
 
 7. **Open http://127.0.0.1:8000/ in your browser.**
 
+
+8. **Add Guns/Categories to your database through their respective pages**
+
+***Note: I recommend adding your categories first, so that they may appear when adding/editing a gun. After this you can also freely edit and delete your guns/categories.***
 ## 🔹 Features
 
-- Full CRUD functionality for **Guns** and **Reviews**
+- Full CRUD functionality for **Guns**, **Reviews** and **Categories**
 - Categorized guns with **many-to-many relationships**
 - Search guns by **name** or **game**
 - Responsive layout using **Bootstrap 5**
 - **Images** for guns (a ready-to-go sample of images will be located in the **media/guns** directory, ready for use.)
 - Custom **404 page**
 - Navigation with consistent **header/footer**
-- Admin-only **edit/delete** functionality for guns and reviews
+- **Edit/Delete** functionality for guns and reviews
 
 ---
 
 ## 📋 Notes
 
 - All environment variables and credentials required for local testing are included in the project defaults; no additional configuration is needed for local testing.
-- Gun images can be uploaded via the **admin panel** or the **Gun edit page**.
+- Gun images can be uploaded via the **admin panel** or the **Gun edit/add page**.
 - The site is fully functional without authentication, as per project requirements.
 
 ---

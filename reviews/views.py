@@ -18,7 +18,6 @@ def review_create(request, gun_slug):
     return render(request, 'reviews/review_form.html', {'form': form, 'gun': gun, 'title': f'Add Review for {gun.name}'})
 
 
-@staff_member_required
 def review_update(request, pk):
     review = get_object_or_404(Review, pk=pk)
     if request.method == 'POST':
@@ -28,10 +27,9 @@ def review_update(request, pk):
             return redirect('gun_detail', slug=review.gun.slug)
     else:
         form = ReviewForm(instance=review)
-    return render(request, 'reviews/review_form.html', {'form': form, 'title': f'Edit Review', 'gun': review.gun})
 
+    return render(request, 'reviews/review_form.html', {'form': form, 'review': review})
 
-@staff_member_required
 def review_delete(request, pk):
     review = get_object_or_404(Review, pk=pk)
     gun = review.gun
